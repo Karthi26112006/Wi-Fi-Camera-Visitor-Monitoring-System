@@ -4,6 +4,7 @@ import {
   Cctv, Plus, Radio, Play, Trash2, RefreshCw, Check, 
   X, AlertCircle, Video, ShieldCheck, MapPin
 } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 export default function SavedCameras({ currentSource, fetchStatus, user, onCamerasUpdated, onSwitchToLive }) {
   const [cameras, setCameras] = useState([]);
@@ -28,7 +29,7 @@ export default function SavedCameras({ currentSource, fetchStatus, user, onCamer
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get('http://localhost:5000/api/cameras', getHeaders());
+      const response = await axios.get(`${API_BASE_URL}/api/cameras`, getHeaders());
       setCameras(response.data);
       if (onCamerasUpdated) onCamerasUpdated();
     } catch (err) {
@@ -52,7 +53,7 @@ export default function SavedCameras({ currentSource, fetchStatus, user, onCamer
     try {
       const formattedName = camLocation ? `${camName} (${camLocation})` : camName;
       const response = await axios.post(
-        'http://localhost:5000/api/cameras', 
+        `${API_BASE_URL}/api/cameras`, 
         { name: formattedName, source: camSource }, 
         getHeaders()
       );
@@ -76,7 +77,7 @@ export default function SavedCameras({ currentSource, fetchStatus, user, onCamer
   const handleActivate = async (id, name) => {
     if (!user) return;
     try {
-      const response = await axios.post('http://localhost:5000/api/cameras/active', { id }, getHeaders());
+      const response = await axios.post(`${API_BASE_URL}/api/cameras/active`, { id }, getHeaders());
       if (response.data.success) {
         fetchCameras();
         fetchStatus();
@@ -100,7 +101,7 @@ export default function SavedCameras({ currentSource, fetchStatus, user, onCamer
     if (!window.confirm(`Are you sure you want to unregister camera "${name}" from SOC?`)) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/cameras/${id}`, getHeaders());
+      await axios.delete(`${API_BASE_URL}/api/cameras/${id}`, getHeaders());
       setCameras(cameras.filter(cam => cam.id !== id));
       if (onCamerasUpdated) onCamerasUpdated();
     } catch (err) {

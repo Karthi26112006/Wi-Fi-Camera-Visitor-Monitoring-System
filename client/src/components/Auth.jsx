@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { ShieldCheck, User, Lock, AlertTriangle, X, Shield, ArrowRight } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 export default function Auth({ onLoginSuccess, initialMode = 'signin', onClose }) {
   const [isLogin, setIsLogin] = useState(initialMode === 'signin');
@@ -25,7 +26,7 @@ export default function Auth({ onLoginSuccess, initialMode = 'signin', onClose }
     const endpoint = isLogin ? 'login' : 'register';
 
     try {
-      const response = await axios.post(`http://localhost:5000/api/auth/${endpoint}`, {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/${endpoint}`, {
         username,
         password
       });

@@ -5,6 +5,7 @@ import {
   UserCheck, Crosshair, User, Save, Clock, Mic, MicOff, 
   AlertCircle, Shield, X, Check, Volume2, VolumeX, Eye
 } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 export default function LiveFeed({ 
   cameraStatus, 
@@ -72,7 +73,7 @@ export default function LiveFeed({
   // Fetch recent visitors for the sidebar mini-timeline
   const fetchRecentVisitors = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/logs');
+      const res = await axios.get(`${API_BASE_URL}/api/logs`);
       if (Array.isArray(res.data)) {
         setRecentVisitors(res.data.slice(0, 3));
       }
@@ -87,7 +88,7 @@ export default function LiveFeed({
 
   // Check audio capabilities
   useEffect(() => {
-    axios.get('http://localhost:5000/api/audio_check')
+    axios.get(`${API_BASE_URL}/api/audio_check`)
       .then(res => setAudioAvailable(res.data.available))
       .catch(() => setAudioAvailable(false));
   }, []);
@@ -136,8 +137,8 @@ export default function LiveFeed({
     };
 
     const audioUrl = cameraSource && cameraSource !== '0'
-      ? `http://localhost:5000/api/audio_feed?user_id=${user?.id}&url=${encodeURIComponent(cameraSource)}&t=${Date.now()}`
-      : `http://localhost:5000/api/audio_feed?user_id=${user?.id}&t=${Date.now()}`;
+      ? `${API_BASE_URL}/api/audio_feed?user_id=${user?.id}&url=${encodeURIComponent(cameraSource)}&t=${Date.now()}`
+      : `${API_BASE_URL}/api/audio_feed?user_id=${user?.id}&t=${Date.now()}`;
     
     audio.src = audioUrl;
     audioRef.current = audio;
@@ -198,14 +199,14 @@ export default function LiveFeed({
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/capture', { 
+      const response = await axios.post(`${API_BASE_URL}/api/capture`, { 
         note: `Quick Snapshot [${new Date().toLocaleTimeString()}]` 
       }, {
         headers: { 'X-User-Id': user?.id }
       });
 
       if (response.data.success) {
-        const fullUrl = `http://localhost:5000/api/snapshots/${response.data.log.filename}`;
+        const fullUrl = `${API_BASE_URL}/api/snapshots/${response.data.log.filename}`;
         setLatestSnapshot(fullUrl);
         setToast({ success: true, message: `Quick snapshot saved: ${response.data.log.filename}` });
         if (onLogCreated) onLogCreated();
@@ -231,14 +232,14 @@ export default function LiveFeed({
     const combinedNote = `[${visitorCategory}] ${visitorName.trim()} - ${visitorNote.trim() || 'Visitor logged via Alpha SOC Checkpoint.'}`;
 
     try {
-      const response = await axios.post('http://localhost:5000/api/capture', { 
+      const response = await axios.post(`${API_BASE_URL}/api/capture`, { 
         note: combinedNote 
       }, {
         headers: { 'X-User-Id': user?.id }
       });
 
       if (response.data.success) {
-        const fullUrl = `http://localhost:5000/api/snapshots/${response.data.log.filename}`;
+        const fullUrl = `${API_BASE_URL}/api/snapshots/${response.data.log.filename}`;
         setLatestSnapshot(fullUrl);
         setToast({ success: true, message: `Visitor "${visitorName}" verified & logged into SOC registry.` });
         setVisitorName('');
@@ -258,7 +259,7 @@ export default function LiveFeed({
   };
 
   const streamUrl = isConnected && isPlaying
-    ? `http://localhost:5000/api/video_feed?user_id=${user?.id}&t=${isRefreshing ? Date.now() : ''}`
+    ? `${API_BASE_URL}/api/video_feed?user_id=${user?.id}&t=${isRefreshing ? Date.now() : ''}`
     : null;
 
   return (

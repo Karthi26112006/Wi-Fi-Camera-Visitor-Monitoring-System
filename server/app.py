@@ -459,8 +459,9 @@ def capture():
 @app.route('/api/logs', methods=['GET'])
 def get_logs():
     logs = get_all_logs()
+    base_url = request.host_url.rstrip('/')
     for log in logs:
-        log['imageUrl'] = f"http://localhost:5000/api/snapshots/{log['filename']}"
+        log['imageUrl'] = f"{base_url}/api/snapshots/{log['filename']}"
     return jsonify(logs)
 
 @app.route('/api/snapshots/<filename>')
@@ -591,6 +592,7 @@ def login():
     })
 
 if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
     # threaded=True is required so that simultaneous streaming responses
     # (video feed, audio feed, API calls) don't block each other.
-    app.run(host='0.0.0.0', port=5000, debug=False, threaded=True)
+    app.run(host='0.0.0.0', port=port, debug=False, threaded=True)

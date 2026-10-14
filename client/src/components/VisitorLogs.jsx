@@ -4,6 +4,7 @@ import {
   Search, Download, ShieldCheck, Maximize2, Trash2, Printer, 
   X, RefreshCw, UserX, Calendar, Clock, Image as ImageIcon 
 } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 export default function VisitorLogs({ onLogsUpdated, user }) {
   const [logs, setLogs] = useState([]);
@@ -22,7 +23,7 @@ export default function VisitorLogs({ onLogsUpdated, user }) {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get('http://localhost:5000/api/logs');
+      const response = await axios.get(`${API_BASE_URL}/api/logs`);
       setLogs(response.data);
       if (onLogsUpdated) onLogsUpdated();
     } catch (err) {
@@ -42,7 +43,7 @@ export default function VisitorLogs({ onLogsUpdated, user }) {
     if (!window.confirm('Permanently purge this visitor snapshot record from the NVR database?')) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/logs/${id}`);
+      await axios.delete(`${API_BASE_URL}/api/logs/${id}`);
       setLogs(logs.filter(l => l.id !== id));
       if (selectedLog && selectedLog.id === id) {
         setSelectedLog(null);

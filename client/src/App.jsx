@@ -9,6 +9,7 @@ import LiveFeed from './components/LiveFeed';
 import VisitorLogs from './components/VisitorLogs';
 import SavedCameras from './components/SavedCameras';
 import Auth from './components/Auth';
+import { API_BASE_URL } from './config';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('live'); // 'live' | 'cameras' | 'logs'
@@ -46,7 +47,7 @@ export default function App() {
     if (!user) return;
     const start = Date.now();
     try {
-      const response = await axios.get('http://localhost:5000/api/status', {
+      const response = await axios.get(`${API_BASE_URL}/api/status`, {
         headers: { 'X-User-Id': user.id }
       });
       setCameraStatus(response.data.status);
@@ -62,8 +63,8 @@ export default function App() {
     if (!user) return;
     try {
       const [camsRes, logsRes] = await Promise.allSettled([
-        axios.get('http://localhost:5000/api/cameras', { headers: { 'X-User-Id': user.id } }),
-        axios.get('http://localhost:5000/api/logs')
+        axios.get(`${API_BASE_URL}/api/cameras`, { headers: { 'X-User-Id': user.id } }),
+        axios.get(`${API_BASE_URL}/api/logs`)
       ]);
 
       if (camsRes.status === 'fulfilled' && Array.isArray(camsRes.value.data)) {

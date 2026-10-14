@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Video, ShieldAlert, Check } from 'lucide-react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 export default function RtspModal({ isOpen, onClose, currentSource, onSourceUpdated, user }) {
   const [source, setSource] = useState(currentSource || '0');
@@ -15,7 +16,7 @@ export default function RtspModal({ isOpen, onClose, currentSource, onSourceUpda
     setFeedback(null);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/config-rtsp', { source }, {
+      const response = await axios.post(`${API_BASE_URL}/api/config-rtsp`, { source }, {
         headers: { 'X-User-Id': user?.id }
       });
       if (response.data.success) {

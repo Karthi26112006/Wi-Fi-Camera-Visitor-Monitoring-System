@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+*.env
+
+# Node
+node_modules/
+dist/
+.DS_Store
+
+# Static generated snapshots (optional to ignore local ones)
+# server/static/snapshots/*.jpg
